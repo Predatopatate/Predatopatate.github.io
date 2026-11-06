@@ -325,3 +325,21 @@ a.ico{text-decoration:none}
 .ink-src img{width:100%;height:auto;display:block;border-radius:6px}
 .skip{position:absolute;left:-999px;top:0;background:var(--win);color:var(--ink);padding:8px 12px;z-index:9999}
 .skip:focus{left:8px;top:8px}
+
+/* ===== Correctifs ===== */
+[hidden]{display:none!important}
+.cvbox{display:grid;grid-template-columns:minmax(0,230px) 1fr;gap:26px;align-items:center;margin-top:18px}
+.cvprev{position:relative;isolation:isolate;display:block;line-height:0;background:#fff;border-radius:4px;transform:rotate(-2deg);transition:transform .25s ease,box-shadow .25s ease;box-shadow:0 4px 0 var(--sh),0 12px 26px #0003}
+.cvprev::before,.cvprev::after{content:"";position:absolute;inset:0;background:#fff;border-radius:4px;z-index:-1;box-shadow:0 0 0 1px var(--line)}
+.cvprev::before{transform:rotate(4deg) translate(7px,2px)}
+.cvprev::after{transform:rotate(-5deg) translate(-6px,3px)}
+.cvprev:hover{transform:rotate(0) scale(1.05)}
+.cvprev img{width:100%;height:auto;display:block;border-radius:4px}
+.cvinfo h2{font-size:1.4rem;margin:0 0 4px}
+.cvinfo .meta{font:700 .78rem "Roboto Mono",ui-monospace,monospace;color:var(--mute);text-transform:uppercase;letter-spacing:.05em;margin:0 0 10px}
+.cvbtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.cvbtns .btn{margin:0}
+.btn.ghost{background:none;color:var(--ink)!important;box-shadow:inset 0 0 0 2px var(--accent)}
+.btn.ghost:hover{background:color-mix(in srgb,var(--accent) 18%,transparent)}
+#lb.single #lbp,#lb.single #lbn{display:none}
+@media (max-width:700px){.cvbox{grid-template-columns:1fr;justify-items:center;text-align:center}.cvbtns{justify-content:center}.cvprev{width:min(240px,70%)}}
