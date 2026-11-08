@@ -361,3 +361,27 @@ a.ico{text-decoration:none}
 
 .home.legal .body h1{font-size:1.5rem;margin:0 0 10px}
 .home.legal .body h2{font-size:1.1rem;margin:18px 0 6px}
+
+/* ===== Logos plein cadre ===== */
+.card{grid-template-columns:240px 1fr;min-height:240px}
+.card .thumb.logo{padding:0;min-height:240px;height:auto;background:#fff;display:block}
+.card .thumb.logo img{width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;display:block}
+@media (max-width:700px){.card{grid-template-columns:1fr;min-height:0}.card .thumb.logo{width:min(240px,100%);height:auto;aspect-ratio:1/1;min-height:0;margin:16px auto 0;border-radius:12px;overflow:hidden}}
+/* ===== Chemin des dessins : thème mer ===== */
+:root{--foam:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--foam:#b8f1ff}}
+:root[data-theme="dark"]{--foam:#b8f1ff}
+.snake path.sea{stroke:var(--sky1);stroke-width:22;stroke-dasharray:none;opacity:.55;animation:none}
+.snake path:not(.sea){stroke:var(--foam);stroke-width:4.5}
+.snake .hx{overflow:visible;animation:tin .55s ease-out both,bobw 6s ease-in-out infinite;animation-delay:calc(var(--i,0)*45ms),calc(var(--i,0)*-700ms)}
+.snake .hx img{border-radius:8px}
+@keyframes tin{from{opacity:0;scale:.6}}
+@keyframes bobw{50%{translate:0 -5px}}
+.snake .hx::after{content:"";position:absolute;inset:-3px;border:3px solid var(--accent);border-radius:11px;opacity:0;pointer-events:none}
+.snake .hx:hover::after{animation:rip .9s ease-out infinite}
+@keyframes rip{from{opacity:.9;scale:.97}to{opacity:0;scale:1.22}}
+.boat{position:absolute;width:52px;height:44px;margin:-34px 0 0 -26px;z-index:6;pointer-events:none;filter:drop-shadow(0 4px 3px #0003);transform:scaleX(var(--f,1))}
+.boat svg{display:block;animation:bobw 2.4s ease-in-out infinite}
+.igbox{grid-template-columns:minmax(0,300px) 1fr}
+.igprev{transform:rotate(1.5deg)}
+@media (max-width:700px){.igbox{grid-template-columns:1fr}}

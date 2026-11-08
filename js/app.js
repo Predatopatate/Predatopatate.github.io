@@ -35,7 +35,7 @@ function openWin(k){
  el.querySelector('.wt').textContent=s.dataset.title;
  const body=el.querySelector('.body');body.innerHTML=s.innerHTML;
  if(body.querySelector('[data-snake]'))buildSnake(body);
- body.querySelectorAll('.thumb.logo img').forEach(tint);
+
  const r=desk.getBoundingClientRect(),w=Math.min(+s.dataset.w||460,r.width-16);
  el.style.width=w+'px';el.style.left=Math.max(8,(r.width-w)/2+((n%4)-1.5)*60)+'px';el.style.top=(60+(n%4)*38)+'px';n++;
  desk.appendChild(el);wins[k]=el;front(el);sfx(WS[k]||523,.28,'sine',.09,(WS[k]||523)*1.03);
@@ -46,21 +46,29 @@ function openWin(k){
  h.addEventListener('pointermove',e=>{if(!h.hasPointerCapture(e.pointerId))return;const R=desk.getBoundingClientRect();el.style.left=Math.max(0,Math.min(R.width-el.offsetWidth,e.clientX-ox))+'px';el.style.top=Math.max(0,Math.min(R.height-60,e.clientY-oy))+'px'});
  h.addEventListener('pointerup',e=>{h.classList.remove('drag');if(h.hasPointerCapture(e.pointerId))h.releasePointerCapture(e.pointerId)});
 }
-/* ---------- Logos : fond de la case = couleur des bords du logo ---------- */
-function tint(img){const run=()=>{try{const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0,24,24);let r=0,g=0,b=0,n=0;for(let i=0;i<24;i++)for(const q of [[i,0],[i,23],[0,i],[23,i]]){const d=x.getImageData(q[0],q[1],1,1).data;if(d[3]>128){r+=d[0];g+=d[1];b+=d[2];n++}}if(n>20)img.parentNode.style.background='rgb('+(r/n|0)+','+(g/n|0)+','+(b/n|0)+')'}catch(e){}};img.complete&&img.naturalWidth?run():img.addEventListener('load',run)}
 /* ---------- Illustration : le serpentin ---------- */
 function buildSnake(body){
  const host=body.querySelector('[data-snake]'),list=host.querySelector('.ink-src'),imgs=[...list.querySelectorAll('img')];
  const rows=8,dy=150,y0=65,H=y0+dy*(rows-1)+95,Y=r=>y0+r*dy,N=imgs.length;let t='',k=0,d='M3 '+y0;
- const tile=(i,x,y)=>`<button class="ph hx" data-i="${i}" style="left:${x}%;top:${y}px;--c1:hsl(${(i*37)%360} 55% 42%);--c2:hsl(${(i*37+40)%360} 60% 58%)" aria-label="${imgs[i].alt}"><span>${i+1}</span><img src="${imgs[i].getAttribute('src')}" alt="" loading="lazy" onerror="this.remove()"><em class="dn">${i+1}</em></button>`;
+ const tile=(i,x,y)=>`<button class="ph hx" data-i="${i}" style="left:${x}%;top:${y}px;--i:${i};--c1:hsl(${(i*37)%360} 55% 42%);--c2:hsl(${(i*37+40)%360} 60% 58%)" aria-label="${imgs[i].alt}"><span>${i+1}</span><img src="${imgs[i].getAttribute('src')}" alt="" loading="lazy" onerror="this.remove()"><em class="dn">${i+1}</em></button>`;
  for(let r=0;r<rows;r++){const dir=r%2?-1:1,y=Y(r),last=r===rows-1,xs=dir>0?[29,50,71]:[71,50,29];
   xs.forEach(x=>{if(k<N)t+=tile(k++,x,y)});
   if(!last){const ex=dir>0?91:9,bx=dir>0?100:0;d+=` L${ex} ${y} C${bx} ${y} ${bx} ${Y(r+1)} ${ex} ${Y(r+1)}`;if(k<N)t+=tile(k++,ex,y+dy/2)}else d+=` L12 ${y}`}
  const lbl=lang==='fr'?['début','fin']:['start','end'];
  const marks=`<i class="dot" style="left:3%;top:${y0}px"></i><i class="dot end" style="left:12%;top:${Y(rows-1)}px"></i><em class="lbl" style="left:2%;top:${y0-36}px">${lbl[0]}</em><em class="lbl" style="left:3%;top:${Y(rows-1)+22}px">${lbl[1]}</em>`;
  list.hidden=true;
- host.insertAdjacentHTML('beforeend',`<div class="snake" style="height:${H}px"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${d}"/></svg>${marks}${t}</div>`);
+ host.insertAdjacentHTML('beforeend',`<div class="snake" style="height:${H}px"><svg viewBox="0 0 100 ${H}" preserveAspectRatio="none" aria-hidden="true"><path class="sea" d="${d}"/><path d="${d}"/></svg>${marks}${t}</div>`);
+ sail(host.querySelector('.snake'));
 }
+/* ---------- Le bateau qui navigue le long du chemin ---------- */
+const BOAT='<svg viewBox="0 0 52 44" width="52" height="44" aria-hidden="true"><path d="M26 30V6" stroke="#16243a" stroke-width="2.6" stroke-linecap="round"/><path d="M28 8L44 28H28Z" fill="#fff" stroke="#16243a" stroke-width="2.6" stroke-linejoin="round"/><path d="M24 13L10 28H24Z" fill="#8fd0ff" stroke="#16243a" stroke-width="2.6" stroke-linejoin="round"/><path d="M26 6L34 4L26 2Z" fill="#e0568a" stroke="#16243a" stroke-width="1.6" stroke-linejoin="round"/><path d="M5 30H47L40 40H12Z" fill="#f59300" stroke="#16243a" stroke-width="2.6" stroke-linejoin="round"/><circle cx="20" cy="35" r="1.8" fill="#fff6dc"/><circle cx="26" cy="35" r="1.8" fill="#fff6dc"/><circle cx="32" cy="35" r="1.8" fill="#fff6dc"/></svg>';
+function sail(sn){
+ if(matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+ const path=sn.querySelector('path:not(.sea)'),Lv=path.getTotalLength(),boat=document.createElement('div');boat.className='boat';boat.innerHTML=BOAT;sn.appendChild(boat);
+ let pts=[],cum=[],lastW=0,t0=0;const dur=42000;
+ const prep=W=>{pts=[];cum=[0];const m=500;for(let i=0;i<=m;i++){const q=path.getPointAtLength(i/m*Lv);pts.push([q.x*W/100,q.y])}for(let i=1;i<=m;i++)cum.push(cum[i-1]+Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]));lastW=W};
+ const frame=ts=>{if(!sn.isConnected)return;const W=sn.clientWidth;if(W&&W!==lastW)prep(W);if(lastW){if(!t0)t0=ts;const tot=cum[cum.length-1],d=((ts-t0)%dur)/dur*tot;let lo=0,hi=cum.length-1;while(hi-lo>1){const mid=(lo+hi)>>1;cum[mid]<=d?lo=mid:hi=mid}const a=pts[lo],b=pts[hi],f=(d-cum[lo])/((cum[hi]-cum[lo])||1);boat.style.left=(a[0]+(b[0]-a[0])*f)+'px';boat.style.top=(a[1]+(b[1]-a[1])*f)+'px';if(Math.abs(b[0]-a[0])>.05)boat.style.setProperty('--f',b[0]<a[0]?-1:1)}requestAnimationFrame(frame)};
+ requestAnimationFrame(frame)}
 /* ---------- Zoom (lightbox) ---------- */
 const lb=$('#lb');let li_=0,lbList=[];
 function showLb(p){lb.classList.toggle('single',lbList.length<2);li_=(p+lbList.length)%lbList.length;const it=lbList[li_];let im=$('#lbi');if(!im){im=document.createElement('img');im.id='lbi';lb.insertBefore(im,$('#lbn'))}im.src=it.src;im.alt=it.alt;lb.classList.add('on')}
