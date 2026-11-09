@@ -400,16 +400,16 @@ a.ico{text-decoration:none}
 .home.blue .hero p{color:inherit;font-size:1rem;margin:0 auto 14px}
 .btn2{background:var(--accent);color:#16243a!important}
 .btn2:hover{background:#fff}
-/* ===== Vie marine ===== */
-.dolphin{position:absolute;left:-130px;bottom:33%;width:96px;height:52px;pointer-events:none;z-index:0;animation:dfly var(--dur,6.5s) linear forwards}
-.dolphin .dj{animation:djump var(--dur,6.5s) ease-in-out forwards}
-.dolphin svg,.angler svg{display:block}
-@keyframes dfly{to{translate:calc(var(--dx,1)*(100vw + 260px)) 0}}
-@keyframes djump{0%{translate:0 90px;rotate:-42deg}50%{translate:0 -100px;rotate:0deg}100%{translate:0 90px;rotate:42deg}}
-.angler{position:absolute;left:-130px;bottom:var(--b,12%);width:92px;height:64px;pointer-events:none;z-index:2;filter:drop-shadow(0 0 10px #ffe66d55);animation:aswim var(--dur,28s) linear forwards}
-.angler svg{animation:bobw 3.2s ease-in-out infinite}
-.angler .halo{animation:glow 1.8s ease-in-out infinite}
-.angler .tailp{transform-box:fill-box;transform-origin:100% 50%;animation:tailw 1s ease-in-out infinite}
-@keyframes aswim{to{translate:calc(var(--dx,1)*(100vw + 260px)) 0}}
+/* ===== Vie marine : silhouettes sous l'eau ===== */
+.sky .dolphin,.sky .angler{position:absolute;left:var(--x,15%);top:var(--y,58%);width:54px;height:auto;pointer-events:none;opacity:0;animation:shade var(--dur,18s) ease-in-out forwards}
+.sky .dolphin{color:#0b3a66;--o:.26}
+.sky .angler{color:#030b18;--o:.5;width:50px}
+.sky .dolphin svg,.sky .angler svg{position:static;display:block;width:100%;height:auto;filter:none;animation:bobw 5s ease-in-out infinite}
+.sky .dolphin svg path,.sky .angler svg path{stroke:none;vector-effect:none}
+.sky .angler svg path.stalk{stroke:currentColor;stroke-width:2.4}
+.sky .angler .halo{animation:glow 2s ease-in-out infinite}
+.sky .angler .tailp{transform-box:fill-box;transform-origin:100% 50%;animation:tailw 1.2s ease-in-out infinite}
+@keyframes shade{0%{opacity:0;translate:0 0}14%{opacity:var(--o)}86%{opacity:var(--o)}100%{opacity:0;translate:var(--dx,50px) 0}}
 @keyframes glow{50%{opacity:.4}}
 @keyframes tailw{50%{transform:rotate(12deg)}}
+@media (max-width:700px){.sky .dolphin,.sky .angler{width:40px}}
